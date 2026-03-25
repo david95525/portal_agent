@@ -1,33 +1,32 @@
-# --- 构建阶段 ---
-FROM python:3.12-slim AS builder
+# --- 構建阶段 ---
+FROM python:3.13-slim AS builder
 
-# 安装 uv
+# 安裝 uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# 【修改】安装编译 Pydantic/Rust 依赖所需的工具
+# 【修改】安装编译 Pydantic/Rust 依賴所需的工具
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-# 将 Rust 加入环境变量
+#  Rust 加入環境
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /app
 
-# 启用字节码预编译，加快启动速度
-ENV UV_COMPILE_BYTECODE=1
+ENV UV_PYTHON=/usr/local/bin/python3.13
 
-# 复制依赖文件并同步
+ENV UV_COMPILE_BYTECODE=1
+# 複製依赖文件同步
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
-# --- 运行阶段 ---
+# --- 運行 ---
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# 从 builder 拷贝虚拟环境（运行阶段不需要安装 Rust，镜像依然很小）
 COPY --from=builder /app/.venv /app/.venv
 COPY . .
 

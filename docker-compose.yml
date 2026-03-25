@@ -1,0 +1,14 @@
+services:
+  portal_agent:
+    build: .
+    container_name: portal-agent-container
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENV=development
+    volumes:
+      - ./data:/app/data
+    restart: always
