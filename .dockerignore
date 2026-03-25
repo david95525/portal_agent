@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.python-version
+.pytest_cache/
+
+# Git
+.git/
+.gitignore
+
+# Project Specific
+state_db.sqlite
+state_db.sqlite-journal
+logs/
+.env
+
+# Docker
+Dockerfile
+.dockerignore
