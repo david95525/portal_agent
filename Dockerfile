@@ -1,34 +1,39 @@
-# Use a slim Python image
+# --- 构建阶段 ---
 FROM python:3.12-slim AS builder
 
-# Install uv
+# 安装 uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Set working directory
+# 【修改】安装编译 Pydantic/Rust 依赖所需的工具
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# 将 Rust 加入环境变量
+ENV PATH="/root/.cargo/bin:${PATH}"
+
 WORKDIR /app
 
-# Copy dependency files
-COPY pyproject.toml uv.lock ./
+# 启用字节码预编译，加快启动速度
+ENV UV_COMPILE_BYTECODE=1
 
-# Install dependencies into a virtual environment
+# 复制依赖文件并同步
+COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
-# Final Stage
+# --- 运行阶段 ---
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy the virtual environment from the builder
+# 从 builder 拷贝虚拟环境（运行阶段不需要安装 Rust，镜像依然很小）
 COPY --from=builder /app/.venv /app/.venv
-# Copy the rest of the application
 COPY . .
 
-# Set environment variables
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 
-# Expose the port (FastAPI default is 8000)
 EXPOSE 8000
 
-# Start the application
 CMD ["python", "main.py"]
