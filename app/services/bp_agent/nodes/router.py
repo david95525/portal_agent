@@ -21,7 +21,6 @@ class RouterNode:
 
     async def route_intent(self, state: BPAgentState):
         current_date = datetime.now().strftime("%Y-%m-%d")
-        structured_llm = self.llm.with_structured_output(RouterOutput)
 
         # 獲取歷史對話，幫助理解「那昨天呢」等連續問題
         history = ""
@@ -44,10 +43,12 @@ class RouterNode:
             "- 日期提取請嚴格遵守 YYYY-MM-DD 格式。\n"
             f"【當前用戶輸入】：{state['input_message']}\n"
         )
-        
+
         try:
+            structured_llm = self.llm.with_structured_output(RouterOutput)
             res: RouterOutput = await structured_llm.ainvoke(prompt)
             logger.info(f"[Router Decision] Intent: {res.intent}, Range: {res.query_start} ~ {res.query_end}, Reason: {res.reasoning}")
+
             
             return {
                 "intent": res.intent,

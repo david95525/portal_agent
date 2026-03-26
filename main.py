@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.api.bp_router import router as bp_router
@@ -7,6 +8,15 @@ from app.utils.logger import setup_logger
 
 logger = setup_logger("MainApp")
 app = FastAPI(title="AI Agent Service")
+
+# 設定 CORS 密鑰 (Middleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允許所有來源 (開發環境可設為 *, 生產環境建議設具體來源)
+    allow_credentials=True,
+    allow_methods=["*"],  # 允許所有 HTTP 方法 (GET, POST, OPTIONS, 等)
+    allow_headers=["*"],  # 允許所有標頭
+)
 
 # 註冊路由
 app.include_router(bp_router, prefix="/api/v1/bp", tags=["Blood Pressure"])
