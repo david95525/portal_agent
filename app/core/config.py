@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     openai_api_key: str = ""
     api_domain: str = ""
+    state_db_path: str = "data/state_db.sqlite"
+    get_bpm_history_endpoint: str = "/api/get_bpm_history_data"
 
     model_config = SettingsConfigDict(
         env_file=".env", 

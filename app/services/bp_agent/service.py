@@ -15,19 +15,24 @@ logger = setup_logger("BPAgentService")
 class BPAgentService(BaseAgent):
     def __init__(self):
         super().__init__("BPAgentService")
-        self.db_path = "./state_db.sqlite"
+        self.db_path = settings.state_db_path
         self.memory = None
         self.app = None
         self._exit_stack = AsyncExitStack()
+        self._init_lock = asyncio.Lock()
 
     async def initialize(self):
-        if self.memory is None:
-            self.memory = await self._exit_stack.enter_async_context(
-                AsyncSqliteSaver.from_conn_string(self.db_path)
-            )
-            workflow = self._build_workflow()
-            self.app = workflow.compile(checkpointer=self.memory)
-            logger.info("BPAgent LangGraph Compiled Successfully")
+        async with self._init_lock:
+            if self.memory is None:
+                # 確保目錄存在
+                os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+                
+                self.memory = await self._exit_stack.enter_async_context(
+                    AsyncSqliteSaver.from_conn_string(self.db_path)
+                )
+                workflow = self._build_workflow()
+                self.app = workflow.compile(checkpointer=self.memory)
+                logger.info(f"BPAgent LangGraph Compiled Successfully (DB: {self.db_path})")
 
     def _build_workflow(self):
         graph = StateGraph(BPAgentState)

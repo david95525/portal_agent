@@ -22,34 +22,33 @@ class RouterNode:
     async def route_intent(self, state: BPAgentState):
         current_date = datetime.now().strftime("%Y-%m-%d")
 
-        # 獲取歷史對話，幫助理解「那昨天呢」等連續問題
+        # 獲取歷史對話，僅取最近 5 則以節省 Token 並保持焦點
         history = ""
         if state.get("messages"):
-            # 取最近 5 則訊息作為背景
-            history = "\n".join([f"{m.type}: {m.content}" for m in state["messages"][-5:]])
+            recent_messages = state["messages"][-5:]
+            history = "\n".join([f"{m.type}: {m.content}" for m in recent_messages])
 
         prompt = (
-            f"【現在日期參考】今天是 {current_date}。\n"
-            f"【上一輪意圖】：{state.get('last_intent', 'None')}\n"
-            f"【對話歷史背景】：\n{history}\n\n"
-            "你是一個專業的任務分發中心。請根據歷史與用戶輸入判斷意圖並提取日期範圍：\n\n"
-            "【意圖 ID 清單】：\n"
-            "1. 'search': 用戶想單純查詢特定的數據紀錄。\n"
-            "2. 'stats': 用戶想看數據分析、平均值、或針對數據提問（通常需要先獲取數據）。\n"
-            "3. 'general': 一般寒暄或無法歸類的請求。\n\n"
+            f"【當前系統日期】今天是 {current_date}。\n"
+            f"【前次執行意圖】：{state.get('last_intent', '無')}\n"
+            f"【對話背景】：\n{history}\n\n"
+            "請根據對話背景與用戶輸入判斷意圖並提取日期範圍（YYYY-MM-DD）：\n\n"
+            "【意圖類型】：\n"
+            "1. 'search': 查詢具體數據紀錄。\n"
+            "2. 'stats': 對數據進行統計分析或提問（如：平均值、是否正常）。\n"
+            "3. 'general': 寒暄或無法識別之請求。\n\n"
             "【決策準則】：\n"
             "- 如果用戶說『那昨天呢』，若歷史是統計，則意圖仍為 'stats'，日期改為昨天。\n"
             "- 如果用戶問『我的數據正常嗎』，則意圖為 'stats'。\n"
             "- 日期提取請嚴格遵守 YYYY-MM-DD 格式。\n"
-            f"【當前用戶輸入】：{state['input_message']}\n"
+            f"【用戶輸入】：{state['input_message']}\n"
         )
 
         try:
             structured_llm = self.llm.with_structured_output(RouterOutput)
             res: RouterOutput = await structured_llm.ainvoke(prompt)
-            logger.info(f"[Router Decision] Intent: {res.intent}, Range: {res.query_start} ~ {res.query_end}, Reason: {res.reasoning}")
+            logger.info(f"[Router Decision] Intent: {res.intent}, Range: {res.query_start} ~ {res.query_end}")
 
-            
             return {
                 "intent": res.intent,
                 "last_intent": res.intent,

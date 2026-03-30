@@ -17,7 +17,3 @@ async def chat(request: ChatRequest):
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@router.on_event("shutdown")
-async def shutdown_event():
-    await bp_service.close()
