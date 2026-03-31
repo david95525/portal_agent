@@ -1,3 +1,4 @@
+import os
 import asyncio
 from langgraph.graph import StateGraph, START, END
 from langchain_core.messages import HumanMessage
@@ -57,7 +58,9 @@ class BPAgentService(BaseAgent):
 
         def supervisor_route(state: BPAgentState):
             intent = state["intent"]
-            if intent in ["search", "stats"]:
+            if intent == "search":
+                return "search"
+            if intent == "stats":
                 # 檢查是否需要重新抓取數據
                 need_fetch = (
                     not state.get("data")

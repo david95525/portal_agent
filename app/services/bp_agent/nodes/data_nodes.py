@@ -22,7 +22,10 @@ class DataNodes:
             state.get("cached_start") == target_start and 
             state.get("cached_end") == target_end):
             logger.info("[Cache Hit] Using existing data records.")
-            return {"final_response": f"已為您準備好 {target_start} 起的數據。"}
+            records = state.get("data")
+            full_data_str = "\n".join([f"- {r.get('date')}: 血壓 {r.get('sys')}/{r.get('dia')} mmHg" for r in records])
+            response_text = f"已為您準備好 {target_start} 起的數據（共 {len(records)} 筆）：\n{full_data_str}"
+            return {"final_response": response_text}
 
         # 使用配置中的域名與端點
         url = f"{settings.api_domain}{settings.get_bpm_history_endpoint}"
@@ -50,8 +53,9 @@ class DataNodes:
                 
                 records = result.get("data", [])
                 
-                summary_lines = [f"- {r.get('date')}: 血壓 {r.get('sys')}/{r.get('dia')} mmHg" for r in records[:3]]
-                response_text = f"已獲取 {target_start} 起的 {len(records)} 筆紀錄。\n" + "\n".join(summary_lines)
+                # 一律返回完整列表的字串表示
+                full_data_str = "\n".join([f"- {r.get('date')}: 血壓 {r.get('sys')}/{r.get('dia')} mmHg" for r in records])
+                response_text = f"已為您獲取 {target_start} 起的完整紀錄（共 {len(records)} 筆）：\n{full_data_str}"
 
                 return {
                     "data": records,
