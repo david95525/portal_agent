@@ -45,24 +45,24 @@ async def test_search_data_cache_hit(mock_llm):
     assert "已為您準備好" in result["final_response"]
 
 @pytest.mark.asyncio
-async def test_analyze_stats_success(mock_llm):
-    mock_llm.ainvoke.return_value = MagicMock(content="您的血壓穩定。")
+async def test_calculate_stats_success(mock_llm):
+    mock_llm.ainvoke.return_value = MagicMock(content="您的平均血壓為 120/80。")
     
     node = DataNodes(mock_llm)
     state = {
         "data": [{"date": "2024-03-01", "sys": 120, "dia": 80}],
-        "input_message": "我最近好嗎？"
+        "input_message": "我的平均血壓是多少？"
     }
     
-    result = await node.analyze_stats(state)
+    result = await node.calculate_stats(state)
     
-    assert result["analysis_result"] == "您的血壓穩定。"
-    assert result["final_response"] == "您的血壓穩定。"
+    assert result["stats_result"] == "您的平均血壓為 120/80。"
+    assert result["final_response"] == "您的平均血壓為 120/80。"
 
 @pytest.mark.asyncio
-async def test_analyze_stats_no_data(mock_llm):
+async def test_calculate_stats_no_data(mock_llm):
     node = DataNodes(mock_llm)
     state = {"data": []}
     
-    result = await node.analyze_stats(state)
+    result = await node.calculate_stats(state)
     assert "沒有數據" in result["final_response"]

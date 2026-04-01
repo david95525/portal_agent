@@ -22,7 +22,7 @@ class BPAgentState(TypedDict):
     cached_end: Optional[str]
     data: Optional[List[Dict[str, Any]]]
     
-    analysis_result: Optional[str]
+    stats_result: Optional[str]
     query_params: Optional[Dict[str, Any]]
     
     final_response: str

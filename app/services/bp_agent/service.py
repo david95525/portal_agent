@@ -47,7 +47,7 @@ class BPAgentService(BaseAgent):
 
         graph.add_node("router", router_manager.route_intent)
         graph.add_node("search", data_manager.search_data)
-        graph.add_node("stats", data_manager.analyze_stats)
+        graph.add_node("stats", data_manager.calculate_stats)
         graph.add_node("general", self.node_general)
 
         # 預留未來節點
