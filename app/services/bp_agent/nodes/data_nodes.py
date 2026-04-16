@@ -75,7 +75,7 @@ class DataNodes:
         data_summary = "\n".join([f"- {r.get('date')}: {r.get('sys')}/{r.get('dia')}" for r in data])
         
         prompt = (
-            "你是一個專業的血壓數據統計助理。請根據以下數據，精確回答用戶關於『統計』的問題：\n"
+            "你是一個專業的生理數據統計助理。請根據以下數據，精確回答用戶關於『統計』的問題：\n"
             f"【數據列表】：\n{data_summary}\n\n"
             f"【用戶問題】：{state['input_message']}\n\n"
             "【工作準則】：\n"

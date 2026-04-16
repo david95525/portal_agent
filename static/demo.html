@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,12 +12,13 @@
         window.mermaid = mermaid;
     </script>
 </head>
+
 <body>
 
     <!-- Debug Panel (Fixed Left) -->
     <div id="debug-panel">
         <h2>Debug Console</h2>
-        
+
         <!-- Token Section -->
         <div id="token-section">
             <h3>User Authorization</h3>
@@ -57,15 +59,17 @@ graph TD
         <div id="chat-panel">
             <div id="chat-header">
                 <span>BP Agent Assistant</span>
-                <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">×</button>
+                <button onclick="toggleChat()"
+                    style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">×</button>
             </div>
 
             <div id="chat-messages">
-                <div class="message agent-message">你好！我是血壓數據助理。請輸入您的問題（如：幫我查這週的血壓、或是統計我最近的數據）。</div>
+                <div class="message agent-message">您好!我是生理數據查詢助理，請輸入您的問題，例如:幫我查上個月的血壓資料</div>
             </div>
 
             <div id="input-area">
-                <input type="text" id="user-input" placeholder="Type your message..." onkeypress="if(event.keyCode==13) sendMessage()">
+                <input type="text" id="user-input" placeholder="Type your message..."
+                    onkeypress="if(event.keyCode==13) sendMessage()">
                 <button id="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
@@ -73,4 +77,5 @@ graph TD
 
     <script src="/static/js/demo.js"></script>
 </body>
+
 </html>

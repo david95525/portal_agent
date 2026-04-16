@@ -85,7 +85,7 @@ class BPAgentService(BaseAgent):
         return graph
 
     async def node_general(self, state: BPAgentState):
-        prompt = f"你是一個親切的血壓數據助理，請回應用戶：{state['input_message']}"
+        prompt = f"你是一個親切的生理數據助理，請回應用戶：{state['input_message']}"
         res = await self.llm.ainvoke(prompt)
         return {"final_response": res.content}
 
