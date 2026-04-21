@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BP Agent Demo</title>
+    <title>AI Agent Independent Comparison</title>
     <link rel="stylesheet" href="/static/css/demo.css">
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -17,9 +17,7 @@
 
     <!-- Debug Panel (Fixed Left) -->
     <div id="debug-panel">
-        <h2>Debug Console</h2>
-
-        <!-- Token Section -->
+        <h2>Control Panel</h2>
         <div id="token-section">
             <h3>User Authorization</h3>
             <div id="token-input-container">
@@ -29,9 +27,8 @@
             <span id="token-display" class="hidden" onclick="editToken()">Token Set (Click to edit)</span>
         </div>
 
-        <!-- Flowchart Panel -->
         <div id="flowchart-panel">
-            <h3>Intent Flow (LangGraph)</h3>
+            <h3>LangGraph State Machine</h3>
             <div id="mermaid-container">
                 <pre class="mermaid" id="mermaid-graph">
 graph TD
@@ -42,36 +39,50 @@ graph TD
     stats --> END
     router -- general --> general[General Node]
     general --> END
-
     classDef active stroke:#f00,stroke-width:4px;
                 </pre>
             </div>
         </div>
     </div>
 
-    <!-- Floating Button -->
-    <div id="chat-widget-button" onclick="toggleChat()">
+    <!-- Floating Button to Open Both -->
+    <div id="chat-widget-button" onclick="toggleChats()">
         <span>💬</span>
     </div>
 
-    <!-- Chat Window -->
-    <div id="chat-window">
-        <div id="chat-panel">
-            <div id="chat-header">
-                <span>BP Agent Assistant</span>
-                <button onclick="toggleChat()"
-                    style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">×</button>
-            </div>
+    <!-- Independent Chat Window 1: LangGraph -->
+    <div id="chat-window-langgraph" class="chat-window">
+        <div class="chat-header">
+            <span>生理資料助理 (LangGraph)</span>
+            <button onclick="closeChat('langgraph')" class="close-btn">×</button>
+        </div>
+        <div class="chat-messages" id="langgraph-messages">
+            <div class="message agent-message">您好!我是生理資料查詢助理，請輸入您的問題，例如:幫我查上個月的血壓資料</div>
+        </div>
+        <!-- 建議問題區塊 -->
+        <div class="suggestion-area" id="langgraph-suggestions"></div>
+        <div class="input-area">
+            <input type="text" id="langgraph-input" placeholder="Ask LangGraph..."
+                onkeypress="if(event.keyCode==13) sendMessage('langgraph')">
+            <button class="send-btn" onclick="sendMessage('langgraph')">Send</button>
+        </div>
+    </div>
 
-            <div id="chat-messages">
-                <div class="message agent-message">您好!我是生理數據查詢助理，請輸入您的問題，例如:幫我查上個月的血壓資料</div>
-            </div>
-
-            <div id="input-area">
-                <input type="text" id="user-input" placeholder="Type your message..."
-                    onkeypress="if(event.keyCode==13) sendMessage()">
-                <button id="send-btn" onclick="sendMessage()">Send</button>
-            </div>
+    <!-- Independent Chat Window 2: LangChain -->
+    <div id="chat-window-langchain" class="chat-window">
+        <div class="chat-header" style="background-color: #28a745;">
+            <span>生理資料助理 (LangChain)</span>
+            <button onclick="closeChat('langchain')" class="close-btn">×</button>
+        </div>
+        <div class="chat-messages" id="langchain-messages">
+            <div class="message agent-message">您好!我是生理資料查詢助理，請輸入您的問題，例如:幫我查上個月的血壓資料</div>
+        </div>
+        <!-- 建議問題區塊 -->
+        <div class="suggestion-area" id="langchain-suggestions"></div>
+        <div class="input-area">
+            <input type="text" id="langchain-input" placeholder="Ask LangChain..."
+                onkeypress="if(event.keyCode==13) sendMessage('langchain')">
+            <button class="send-btn" onclick="sendMessage('langchain')" style="background-color: #28a745;">Send</button>
         </div>
     </div>
 

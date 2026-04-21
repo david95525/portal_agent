@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.api.bp_router import router as bp_router, bp_service
+from app.api.langchain_router import router as langchain_router
 from app.utils.logger import setup_logger
 
 logger = setup_logger("MainApp")
@@ -32,6 +33,7 @@ app.add_middleware(
 
 # 註冊路由
 app.include_router(bp_router, prefix="/api/v1/bp", tags=["Blood Pressure"])
+app.include_router(langchain_router, prefix="/api/v1/langchain", tags=["LangChain"])
 
 # 掛載靜態檔案 (供 CSS/JS 引用)
 app.mount("/static", StaticFiles(directory="static"), name="static")

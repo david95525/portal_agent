@@ -1,10 +1,10 @@
 :root {
     --primary-color: #007bff;
+    --secondary-color: #28a745;
     --bg-color: #f4f7f6;
 }
 body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); margin: 0; padding: 0; }
 
-/* Floating Button */
 #chat-widget-button {
     position: fixed;
     bottom: 20px;
@@ -20,17 +20,13 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     z-index: 1000;
-    transition: transform 0.3s;
 }
-#chat-widget-button:hover { transform: scale(1.1); }
 
-/* Chat Window - Now only the chat panel */
-#chat-window {
+.chat-window {
     position: fixed;
     bottom: 90px;
-    right: 20px;
-    width: 400px;
-    height: 600px;
+    width: 380px;
+    height: 550px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.2);
@@ -40,7 +36,76 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     z-index: 1000;
 }
 
-/* Debug Panel (Left side) */
+#chat-window-langgraph { right: 420px; }
+#chat-window-langchain { right: 20px; }
+
+.chat-header {
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.close-btn { background: none; border: none; color: white; cursor: pointer; font-size: 20px; }
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fff;
+}
+
+/* Suggestion Area */
+.suggestion-area {
+    padding: 10px;
+    background: #fdfdfd;
+    border-top: 1px solid #eee;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.suggestion-btn {
+    padding: 6px 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.suggestion-btn:hover {
+    background: #f0f7ff;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+#langchain-suggestions .suggestion-btn:hover {
+    background: #f0fff4;
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.input-area {
+    padding: 12px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+    background: #fff;
+}
+.input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
+.send-btn { padding: 8px 12px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
+
+.message { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+.user-message { align-self: flex-end; background: #007bff; color: white; border-bottom-right-radius: 2px; }
+.agent-message { align-self: flex-start; background: #f1f1f1; color: #333; border-bottom-left-radius: 2px; border-left: 4px solid var(--primary-color); }
+#langchain-messages .agent-message { border-left-color: var(--secondary-color); }
+
+/* Debug Panel */
 #debug-panel {
     position: fixed;
     left: 0;
@@ -53,77 +118,8 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     flex-direction: column;
     padding: 15px;
     box-sizing: border-box;
-    overflow-y: auto;
 }
-
-#debug-panel h2 { margin-top: 0; font-size: 18px; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-
-/* Flowchart */
-#flowchart-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-#flowchart-panel h3 { font-size: 14px; color: #666; }
-#mermaid-container { flex: 1; overflow: auto; background: white; border: 1px solid #eee; border-radius: 4px; }
-
-/* Token Section in Debug Panel */
-#token-section {
-    padding: 15px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-#token-section h3 { margin: 0; font-size: 14px; color: #666; }
-#token-input-container { display: flex; gap: 5px; }
-#token-input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-#save-token-btn { padding: 8px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-
-/* Chat Area */
-#chat-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-#chat-header {
-    flex-shrink: 0;
-    padding: 15px;
-    background: var(--primary-color);
-    color: white;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-#chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #fff;
-    min-height: 0;
-}
-.message { padding: 8px 12px; border-radius: 8px; max-width: 80%; line-height: 1.4; font-size: 14px; word-wrap: break-word; }
-.user-message { align-self: flex-end; background: var(--primary-color); color: white; border-bottom-right-radius: 2px; }
-.agent-message { align-self: flex-start; background: #f1f1f1; color: #333; border-bottom-left-radius: 2px; }
-
-#input-area {
-    flex-shrink: 0;
-    padding: 15px;
-    border-top: 1px solid #eee;
-    display: flex;
-    gap: 10px;
-    background: #fff;
-}
-#user-input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-#send-btn { padding: 8px 15px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
-
 .hidden { display: none !important; }
-#token-display { font-size: 12px; color: #28a745; font-weight: bold; cursor: pointer; text-decoration: underline; }
+#token-section { padding: 10px; background: #fff; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
+#token-display { color: #28a745; font-weight: bold; cursor: pointer; text-decoration: underline; }
+#mermaid-container { flex: 1; overflow: auto; background: white; border: 1px solid #eee; margin-top: 10px; }
