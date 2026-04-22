@@ -2,6 +2,7 @@ from abc import ABC
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
+from langchain_aws import ChatBedrock
 from app.core.config import settings
 
 class BaseAgent(ABC):
@@ -22,6 +23,14 @@ class BaseAgent(ABC):
                 model="gpt-4o",
                 api_key=settings.openai_api_key,
                 temperature=0
+            )
+        elif provider == "bedrock":
+            return ChatBedrock(
+                model_id=settings.aws_bedrock_model_id,
+                region_name=settings.aws_region,
+                aws_access_key_id=settings.aws_access_key_id,
+                aws_secret_access_key=settings.aws_secret_access_key,
+                model_kwargs={"temperature": 0}
             )
         else:
             raise ValueError(f"Unsupported provider: {provider}")

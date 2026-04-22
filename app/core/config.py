@@ -12,6 +12,13 @@ class Settings(BaseSettings):
     state_db_path: str = "data/state_db.sqlite"
     get_bpm_history_endpoint: str = "/api/get_bpm_history_data"
 
+    # AWS / Bedrock
+    aws_access_key_id: str | None = None
+    aws_secret_access_key: str | None = None
+    aws_session_token: str | None = None
+    aws_region: str = "eu-west-1"
+    aws_bedrock_model_id: str = "eu.amazon.nova-2-lite-v1:0"
+
     model_config = SettingsConfigDict(
         env_file=".env", 
         extra="ignore",
