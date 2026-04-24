@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     state_db_path: str = "data/state_db.sqlite"
     get_bpm_history_endpoint: str = "/api/get_bpm_history_data"
 
+    # CORS
+    backend_cors_origins: list[str] = ["*"]
+
     # AWS / Bedrock
     aws_access_key_id: str | None = None
     aws_secret_access_key: str | None = None

@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.api.bp_router import router as bp_router, bp_service
 from app.api.langchain_router import router as langchain_router
+from app.core.config import settings
 from app.utils.logger import setup_logger
 
 logger = setup_logger("MainApp")
@@ -21,11 +22,11 @@ async def lifespan(app: FastAPI):
     await bp_service.close()
 
 app = FastAPI(title="AI Agent Service", lifespan=lifespan)
-
+logger.info(settings.backend_cors_origins)
 # 設定 CORS 密鑰 (Middleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允許所有來源 (開發環境可設為 *, 生產環境建議設具體來源)
+    allow_origins=settings.backend_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],  # 允許所有 HTTP 方法 (GET, POST, OPTIONS, 等)
     allow_headers=["*"],  # 允許所有標頭
