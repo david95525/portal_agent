@@ -85,7 +85,22 @@ graph TD
             <button class="send-btn" onclick="sendMessage('langchain')" style="background-color: #28a745;">Send</button>
         </div>
     </div>
-
+    <!-- Independent Chat Window 3: AWS Bedrock Agent -->
+    <div id="chat-window-bedrock" class="chat-window">
+        <div class="chat-header" style="background-color: #007bff;">
+            <span>生理資料助理 (Bedrock Agent)</span>
+            <button onclick="closeChat('bedrock')" class="close-btn">×</button>
+        </div>
+        <div class="chat-messages" id="bedrock-messages">
+            <div class="message agent-message">您好!我是生理資料查詢助理。請輸入您的問題，例如:幫我查上個月的血壓資料</div>
+        </div>
+        <div class="suggestion-area" id="bedrock-suggestions"></div>
+        <div class="input-area">
+            <input type="text" id="bedrock-input" placeholder="Ask Bedrock Agent..."
+                onkeypress="if(event.keyCode==13) sendMessage('bedrock')">
+            <button class="send-btn" onclick="sendMessage('bedrock')" style="background-color: #007bff;">Send</button>
+        </div>
+    </div>
     <script src="/static/js/demo.js"></script>
 </body>
 

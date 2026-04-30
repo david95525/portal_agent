@@ -21,6 +21,11 @@ def test_read_root():
     assert response.status_code == 200
     assert response.json() == {"message": "Welcome to BP AI Agent Service"}
 
+def test_get_config():
+    response = client.get("/api/config")
+    assert response.status_code == 200
+    assert "bedrock_api_key" in response.json()
+
 def test_chat_endpoint():
     response = client.post("/api/v1/bp/chat", json={
         "user_id": "test_user",

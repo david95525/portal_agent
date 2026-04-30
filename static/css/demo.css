@@ -1,9 +1,16 @@
 :root {
     --primary-color: #007bff;
     --secondary-color: #28a745;
+    --bedrock-color: #6f42c1;
     --bg-color: #f4f7f6;
 }
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-color);
+    margin: 0;
+    padding: 0;
+}
 
 #chat-widget-button {
     position: fixed;
@@ -18,7 +25,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     justify-content: center;
     color: white;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1000;
 }
 
@@ -29,15 +36,12 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     height: 550px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     display: none;
     flex-direction: column;
     overflow: hidden;
     z-index: 1000;
 }
-
-#chat-window-langgraph { right: 420px; }
-#chat-window-langchain { right: 20px; }
 
 .chat-header {
     padding: 12px;
@@ -48,7 +52,14 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     justify-content: space-between;
     align-items: center;
 }
-.close-btn { background: none; border: none; color: white; cursor: pointer; font-size: 20px; }
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+}
 
 .chat-messages {
     flex: 1;
@@ -69,6 +80,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     flex-wrap: wrap;
     gap: 6px;
 }
+
 .suggestion-btn {
     padding: 6px 10px;
     background: #fff;
@@ -79,11 +91,13 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     cursor: pointer;
     transition: all 0.2s;
 }
+
 .suggestion-btn:hover {
     background: #f0f7ff;
     border-color: var(--primary-color);
     color: var(--primary-color);
 }
+
 #langchain-suggestions .suggestion-btn:hover {
     background: #f0fff4;
     border-color: var(--secondary-color);
@@ -97,13 +111,51 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     gap: 8px;
     background: #fff;
 }
-.input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-.send-btn { padding: 8px 12px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; }
 
-.message { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
-.user-message { align-self: flex-end; background: #007bff; color: white; border-bottom-right-radius: 2px; }
-.agent-message { align-self: flex-start; background: #f1f1f1; color: #333; border-bottom-left-radius: 2px; border-left: 4px solid var(--primary-color); }
-#langchain-messages .agent-message { border-left-color: var(--secondary-color); }
+.input-area input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+
+.send-btn {
+    padding: 8px 12px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.message {
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 85%;
+    font-size: 13px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.user-message {
+    align-self: flex-end;
+    background: #007bff;
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+.agent-message {
+    align-self: flex-start;
+    background: #f1f1f1;
+    color: #333;
+    border-bottom-left-radius: 2px;
+    border-left: 4px solid var(--primary-color);
+}
+
+#langchain-messages .agent-message {
+    border-left-color: var(--secondary-color);
+}
 
 /* Debug Panel */
 #debug-panel {
@@ -119,7 +171,73 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     padding: 15px;
     box-sizing: border-box;
 }
-.hidden { display: none !important; }
-#token-section { padding: 10px; background: #fff; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
-#token-display { color: #28a745; font-weight: bold; cursor: pointer; text-decoration: underline; }
-#mermaid-container { flex: 1; overflow: auto; background: white; border: 1px solid #eee; margin-top: 10px; }
+
+.hidden {
+    display: none !important;
+}
+
+#token-section {
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+#token-display {
+    color: #28a745;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#mermaid-container {
+    flex: 1;
+    overflow: auto;
+    background: white;
+    border: 1px solid #eee;
+    margin-top: 10px;
+}
+
+/* 從右邊開始排列：LangChain(最右) -> LangGraph(中) -> Bedrock(左) */
+#chat-window-langchain {
+    right: 20px;
+}
+
+#chat-window-langgraph {
+    right: 390px;
+}
+
+#chat-window-bedrock {
+    right: 760px;
+}
+
+/* Bedrock 專屬樣式 */
+#chat-window-bedrock .chat-header {
+    background: var(--bedrock-color);
+}
+
+#bedrock-messages .agent-message {
+    border-left-color: var(--bedrock-color);
+}
+
+#bedrock-suggestions .suggestion-btn:hover {
+    background: #f5f0ff;
+    border-color: var(--bedrock-color);
+    color: var(--bedrock-color);
+}
+
+/* 讓視窗在小螢幕時也能自適應 (選配) */
+@media (max-width: 1150px) {
+    .chat-window {
+        width: 300px;
+    }
+
+    #chat-window-langgraph {
+        right: 330px;
+    }
+
+    #chat-window-bedrock {
+        right: 640px;
+    }
+}

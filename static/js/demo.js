@@ -1,7 +1,11 @@
 let isLgOpen = false;
 let isLcOpen = false;
+let isBrOpen = false;
 let userToken = "";
-
+const AWS_CONFIG = {
+    apiKey: "",
+    endpoint: "https://xnjrkc4vqd.execute-api.eu-west-1.amazonaws.com/prod/chat"
+};
 // 建議問題配置
 const suggestionsConfig = {
     main: [
@@ -34,7 +38,7 @@ const suggestionsConfig = {
 function renderSuggestions(type, category = "main", extra = null) {
     const container = document.getElementById(`${type}-suggestions`);
     container.innerHTML = "";
-    
+
     let options = [];
     if (typeof suggestionsConfig[category] === 'function') {
         options = suggestionsConfig[category](extra);
@@ -69,23 +73,21 @@ function renderSuggestions(type, category = "main", extra = null) {
 function toggleChats() {
     isLgOpen = !isLgOpen;
     isLcOpen = !isLcOpen;
-    const lgWin = document.getElementById('chat-window-langgraph');
-    const lcWin = document.getElementById('chat-window-langchain');
-    lgWin.style.display = isLgOpen ? 'flex' : 'none';
-    lcWin.style.display = isLcOpen ? 'flex' : 'none';
-    
+    isBrOpen = !isBrOpen;
+    document.getElementById('chat-window-langgraph').style.display = isLgOpen ? 'flex' : 'none';
+    document.getElementById('chat-window-langchain').style.display = isLcOpen ? 'flex' : 'none';
+    document.getElementById('chat-window-bedrock').style.display = isBrOpen ? 'flex' : 'none';
+
     if (isLgOpen) renderSuggestions('langgraph');
     if (isLcOpen) renderSuggestions('langchain');
+    if (isBrOpen) renderSuggestions('bedrock'); // 渲染建議
 }
 
 function closeChat(type) {
-    if (type === 'langgraph') {
-        isLgOpen = false;
-        document.getElementById('chat-window-langgraph').style.display = 'none';
-    } else {
-        isLcOpen = false;
-        document.getElementById('chat-window-langchain').style.display = 'none';
-    }
+    document.getElementById(`chat-window-${type}`).style.display = 'none';
+    if (type === 'langgraph') isLgOpen = false;
+    if (type === 'langchain') isLcOpen = false;
+    if (type === 'bedrock') isBrOpen = false;
 }
 
 function saveToken() {
@@ -138,29 +140,54 @@ async function executeSendMessage(type, text) {
     }
 
     appendMessage(type, 'user', text);
+    // 判斷是否為 Bedrock 模式
+    if (type === 'bedrock') {
+        try {
+            const response = await fetch(AWS_CONFIG.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': AWS_CONFIG.apiKey
+                },
+                body: JSON.stringify({
+                    message: text,
+                    sessionId: "web-user-" + userToken.substring(0, 5),
+                    token: userToken
+                })
+            });
 
-    const endpoint = type === 'langgraph' ? '/api/v1/bp/chat' : '/api/v1/langchain/chat';
-    
-    try {
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                user_id: "demo-user",
-                message: text,
-                user_token: userToken
-            })
-        });
+            const data = await response.json();
+            appendMessage(type, 'agent', data.reply || data.text);
 
-        const data = await response.json();
-        appendMessage(type, 'agent', data.text);
-        
-        if (type === 'langgraph' && data.intent) {
-            updateGraphHighlight(data.intent);
+        } catch (error) {
+            console.error(error);
+            appendMessage(type, 'agent', "Bedrock Error: 無法連線至 AWS 服務。");
         }
-    } catch (error) {
-        console.error(error);
-        appendMessage(type, 'agent', "Error: Could not connect to the server.");
+    }
+    else {
+        const endpoint = type === 'langgraph' ? '/api/v1/bp/chat' : '/api/v1/langchain/chat';
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: "demo-user",
+                    message: text,
+                    user_token: userToken
+                })
+            });
+
+            const data = await response.json();
+            appendMessage(type, 'agent', data.text);
+
+            if (type === 'langgraph' && data.intent) {
+                updateGraphHighlight(data.intent);
+            }
+        } catch (error) {
+            console.error(error);
+            appendMessage(type, 'agent', "Error: Could not connect to the server.");
+        }
     }
 }
 
@@ -173,7 +200,19 @@ function appendMessage(type, sender, text) {
     container.scrollTop = container.scrollHeight;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 獲取後端配置
+    try {
+        const configResponse = await fetch('/api/config');
+        const configData = await configResponse.json();
+        if (configData.bedrock_api_key) {
+            AWS_CONFIG.apiKey = configData.bedrock_api_key;
+            console.log("AWS Bedrock API Key loaded successfully.");
+        }
+    } catch (error) {
+        console.error("Failed to load config from backend:", error);
+    }
+
     if (window.mermaid) {
         mermaid.run();
     }

@@ -22,12 +22,12 @@ class Settings(BaseSettings):
     aws_region: str = "eu-west-1"
     aws_bedrock_model_id: str = "eu.amazon.nova-2-lite-v1:0"
 
-    model_config = SettingsConfigDict(
-        env_file=".env", 
-        extra="ignore",
-        env_prefix="",
-        case_sensitive=False
-    )
+    bedrock_api_key: str | None = None
+
+    model_config = SettingsConfigDict(env_file=".env",
+                                      extra="ignore",
+                                      env_prefix="",
+                                      case_sensitive=False)
 
 
 settings = Settings()

@@ -43,6 +43,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def index():
     return {"message": "Welcome to BP AI Agent Service"}
 
+@app.get("/api/config")
+async def get_config():
+    return {
+        "bedrock_api_key": settings.bedrock_api_key
+    }
+
 @app.get("/demo")
 async def demo():
     return FileResponse("static/demo.html")
